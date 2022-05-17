@@ -45,7 +45,7 @@
 
 <script lang="ts">
 import { defineComponent, reactive } from 'vue'
-import { useRoute } from 'vue-router'
+import { useRouter } from 'vue-router'
 import axios from 'axios'
 import ValidateInput, { RulesProp } from '../components/ValidateInput.vue'
 import ValidateForm from '../components/ValidateForm.vue'
@@ -64,7 +64,7 @@ export default defineComponent({
       password: '',
       repeatPassword: ''
     })
-    const router = useRoute()
+    const router = useRouter()
     const emailRules: RulesProp = [
       { type: 'required', message: '电子邮箱地址不能为空' },
       { type: 'email', message: '请输入正确的电子邮箱格式' }

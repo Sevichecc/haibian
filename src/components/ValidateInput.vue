@@ -108,7 +108,7 @@ export default defineComponent({
     // 发送事件
     onMounted(() => {
       emitter.emit('form-item-created', validateInput)
-      // emitter.emit('form-item-clear', clearInputs)
+      emitter.emit('form-item-clear', clearInputs)
     })
 
     return {

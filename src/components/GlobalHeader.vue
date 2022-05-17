@@ -9,7 +9,7 @@
       <dropdown :title="`你好，${user.nickName}`">
         <dropdown-item><router-link to="/create" class="dropdown-item">新建文章</router-link></dropdown-item>
         <dropdown-item disabled> <a href="#"  class="dropdown-item">编辑资料</a></dropdown-item>
-        <dropdown-item> <a href="#"  class="dropdown-item">退出登录</a></dropdown-item>
+        <dropdown-item> <a href="#" @click="logout" class="dropdown-item">退出登录</a></dropdown-item>
       </dropdown>
     </ul>
 </nav>
@@ -19,7 +19,8 @@
 import { defineComponent, PropType } from 'vue'
 import Dropdown from './Dropdown.vue'
 import DropdownItem from './DropdownItem.vue'
-import { UserProps } from '../store'
+import store, { UserProps } from '../store'
+import createMessage from './createMessage'
 export default defineComponent({
   name: 'GlobalHeader',
   components: { Dropdown, DropdownItem },
@@ -27,6 +28,15 @@ export default defineComponent({
     user: {
       type: Object as PropType<UserProps>,
       required: true
+    }
+  },
+  setup () {
+    const logout = () => {
+      createMessage('成功退出登陆', 'success', 2000)
+      store.commit('logout')
+    }
+    return {
+      logout
     }
   }
 })
