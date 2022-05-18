@@ -6,12 +6,11 @@
       </slot>
       <slot v-else-if="fileStatus==='success'" name="uploaded" :uploadedData="uploadedData">
         <button class="btn btn-primary">上传成功</button>
-        <button class="btn btn-light">删除</button>
-      </slot>
+      </slot> <br>
+      <button  v-if="fileStatus==='success'" class="btn btn-secondary" @click.stop="fileDelete">删除</button>
       <slot v-else name="default" >
         <button class="btn btn-primary">点击上传</button>
       </slot>
-
     </div>
     <input
     class="file-input d-none" type="file"
@@ -76,12 +75,18 @@ export default defineComponent({
         })
       }
     }
+    const fileDelete = () => {
+      uploadedData.value = ''
+      fileStatus.value = 'ready'
+      context.emit('delete')
+    }
     return {
       fileInput,
       triggerUpload,
       fileStatus,
       handleFileChange,
-      uploadedData
+      uploadedData,
+      fileDelete
     }
   }
 })

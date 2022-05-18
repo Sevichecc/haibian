@@ -12,7 +12,7 @@
       </div>
     </section>
     <h4 class="font-weight-bold text-center">发现精彩</h4>
-    <uploader action="/upload" :beforeUpload="beforeUpload" @file-uploaded="onFileUploaded">
+    <uploader action="/upload" :beforeUpload="beforeUpload" @file-uploaded="onFileUploaded" @delete="afterFileDeleted">
       <template #uploaded="dataProps">
         <img :src="dataProps.uploadedData.data.url" width="500"/>
       </template>
@@ -49,12 +49,17 @@ export default defineComponent({
       return isJPG
     }
     const onFileUploaded = (rawData: ResponseType<ImageProps>) => {
-      createMessage(`上传图片ID ${rawData.data._id}`, 'success')
+      createMessage(`上传图片ID ${rawData.data._id}`, 'success', 2000)
+    }
+
+    const afterFileDeleted = () => {
+      createMessage('图片已清空', 'default', 2000)
     }
     return {
       list,
       beforeUpload,
-      onFileUploaded
+      onFileUploaded,
+      afterFileDeleted
     }
   }
 })
