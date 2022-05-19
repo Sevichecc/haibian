@@ -1,12 +1,12 @@
 <template>
   <div class="file-upload">
-    <div class="file-upload-container" @click.prevent="triggerUpload">
+    <div class="file-upload-container" @click.prevent="triggerUpload" v-bind="$attrs">
       <slot v-if="fileStatus==='loading'" name="loading">
         <button class="btn btn-primary" disabled>正在上传...</button>
       </slot>
       <slot v-else-if="fileStatus==='success'" name="uploaded" :uploadedData="uploadedData">
         <button class="btn btn-primary">上传成功</button>
-      </slot> <br>
+      </slot>
       <button  v-if="fileStatus==='success'" class="btn btn-secondary" @click.stop="fileDelete">删除</button>
       <slot v-else name="default" >
         <button class="btn btn-primary">点击上传</button>
@@ -36,6 +36,7 @@ export default defineComponent({
       type: Function as PropType<CheckFunction>
     }
   },
+  inheritAttrs: false,
   emits: ['file-uploaded', 'file-uploaded-error', 'delete'],
   setup (props, context) {
     const fileInput = ref<null | HTMLInputElement>(null)
