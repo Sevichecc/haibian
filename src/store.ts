@@ -6,17 +6,22 @@ export interface ResponseType<P = Record<string, unknown>> {
   msg: string;
   data: P;
 }
+
+export interface ImageProps {
+  _id?: string,
+  url?: string,
+  createdAt?: string,
+  fitUrl?: string
+}
+
 export interface UserProps {
   isLogin: boolean;
   nickName?: string;
   _id?: string;
   column?: string
-  email?: string
-}
-export interface ImageProps {
-  _id?: string,
-  url?: string,
-  createdAt?: string
+  email?: string,
+  avatar?: ImageProps,
+  description?: string
 }
 export interface ColumnProps {
   _id: string,
@@ -24,15 +29,19 @@ export interface ColumnProps {
   avatar?: ImageProps,
   description: string
 }
+
 export interface PostProps {
   _id?: string,
   title: string,
   excerpt?: string,
   content?: string,
-  image?: ImageProps,
+  image?: ImageProps | string,
   createdAt?: string,
-  column: string
+  column: string,
+  author?: string,
+  isHTML?: boolean
 }
+
 export interface GlobalErrorProps {
   status: boolean,
   message?: string
@@ -50,6 +59,7 @@ export interface GlobalDataProps {
 const getAndCommit = async (url: string, mutationName:string, commit: Commit) => {
   const { data } = await axios.get(url)
   commit(mutationName, data)
+  return data
 }
 const postAndCommit = async (url: string, mutationName:string, commit: Commit, payload: any) => {
   const { data } = await axios.post(url, payload)
@@ -82,6 +92,9 @@ const store = createStore<GlobalDataProps>({
     fetchPosts (state, rawData) {
       state.posts = rawData.data.list
     },
+    fetchPost (state, rawData) {
+      state.posts = [rawData.data]
+    },
     setLoading (state, status) {
       state.loading = status
     },
@@ -106,19 +119,25 @@ const store = createStore<GlobalDataProps>({
   },
   actions: {
     fetchColumns ({ commit }) {
-      getAndCommit('/columns', 'fetchColumns', commit)
+      return getAndCommit('/columns', 'fetchColumns', commit)
     },
     fetchColumn ({ commit }, cid) {
-      getAndCommit(`/columns/${cid}`, 'fetchColumn', commit)
+      return getAndCommit(`/columns/${cid}`, 'fetchColumn', commit)
     },
     fetchPosts ({ commit }, cid) {
-      getAndCommit(`/columns/${cid}/posts`, 'fetchPosts', commit)
+      return getAndCommit(`/columns/${cid}/posts`, 'fetchPosts', commit)
+    },
+    fetchPost ({ commit }, id) {
+      return getAndCommit(`/posts/${id}`, 'fetchPost', commit)
     },
     fetchCurrentUser ({ commit }) {
-      getAndCommit('/user/current', 'fetchCurrentUser', commit)
+      return getAndCommit('/user/current', 'fetchCurrentUser', commit)
     },
     login ({ commit }, payload) {
       return postAndCommit('/user/login', 'login', commit, payload)
+    },
+    createPost ({ commit }, payload) {
+      return postAndCommit('/posts', 'createPost', commit, payload)
     },
     loginAndFetch ({ dispatch }, loginData) {
       return dispatch('login', loginData).then(() => {
@@ -132,6 +151,9 @@ const store = createStore<GlobalDataProps>({
     },
     getPostsByCid: (state) => (cid: string) => {
       return state.posts.filter(post => post.column === cid)
+    },
+    getCurrentPost: (state) => (id: string) => {
+      return state.posts.find(post => post._id === id)
     }
   }
 })

@@ -3,6 +3,7 @@ import axios from 'axios'
 import Home from './views/Home.vue'
 import Login from './views/Login.vue'
 import ColumnDetail from './views/ColumnDetail.vue'
+import PostDetail from './views/PostDetail.vue'
 import CreatePosts from './views/CreatePost.vue'
 import Signup from './views/Signup.vue'
 import store from './store'
@@ -27,6 +28,11 @@ const router = createRouter({
       path: '/column/:id',
       name: 'column',
       component: ColumnDetail
+    },
+    {
+      path: '/posts/:id',
+      name: 'post',
+      component: PostDetail
     },
     {
       path: '/create',
