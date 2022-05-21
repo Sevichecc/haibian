@@ -23,7 +23,7 @@
 
 <script lang="ts">
 import axios from 'axios'
-import { defineComponent, ref, PropType } from 'vue'
+import { defineComponent, ref, PropType, watch } from 'vue'
 type uploadStatus= 'ready' |'loading' | 'success'|'error'
 type CheckFunction = (file: File) => boolean
 export default defineComponent({
@@ -34,19 +34,31 @@ export default defineComponent({
     },
     beforeUpload: {
       type: Function as PropType<CheckFunction>
+    },
+    uploaded: {
+      type: Object
     }
   },
   inheritAttrs: false,
   emits: ['file-uploaded', 'file-uploaded-error', 'delete'],
   setup (props, context) {
     const fileInput = ref<null | HTMLInputElement>(null)
-    const fileStatus = ref<uploadStatus>('ready')
-    const uploadedData = ref()
+    const fileStatus = ref<uploadStatus>(props.uploaded ? 'success' : 'ready')
+    const uploadedData = ref(props.uploaded)
+
+    watch(() => props.uploaded, (newValue) => {
+      if (newValue) {
+        fileStatus.value = 'success'
+        uploadedData.value = newValue
+      }
+    })
+
     const triggerUpload = () => {
       if (fileInput.value) {
         fileInput.value.click()
       }
     }
+
     const handleFileChange = (e: Event) => {
       const currentTarget = e.target as HTMLInputElement
       if (currentTarget.files) {
@@ -77,7 +89,7 @@ export default defineComponent({
       }
     }
     const fileDelete = () => {
-      uploadedData.value = ''
+      uploadedData.value = { }
       fileStatus.value = 'ready'
       context.emit('delete')
     }

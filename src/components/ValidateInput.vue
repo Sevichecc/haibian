@@ -3,17 +3,15 @@
     <input v-if="tag!=='textarea'"
       class="form-control"
       :class="{'is-invalid': inputRef.error}"
-      :value="inputRef.val"
       @blur="validateInput"
-      @input="updateValue"
+      v-model="inputRef.val"
       v-bind="$attrs"
     >
     <textarea v-else
       class="form-control"
       :class="{'is-invalid': inputRef.error}"
-      :value="inputRef.val"
+      v-model="inputRef.val"
       @blur="validateInput"
-      @input="updateValue"
       v-bind="$attrs"
     />
     <span v-if="inputRef.error" class="invalid-feedback">{{inputRef.message}}</span>
@@ -21,7 +19,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, reactive, PropType, onMounted } from 'vue'
+import { defineComponent, reactive, PropType, onMounted, computed } from 'vue'
 import { emitter } from './ValidateForm.vue'
 
 const emailReg = /^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/
@@ -54,7 +52,12 @@ export default defineComponent({
   inheritAttrs: false,
   setup (props, context) {
     const inputRef = reactive({
-      val: props.modelValue || '',
+      val: computed({
+        get: () => props.modelValue || '',
+        set: val => {
+          context.emit('update: modelValue', val)
+        }
+      }),
       error: false,
       message: ''
     })
@@ -113,9 +116,9 @@ export default defineComponent({
 
     return {
       inputRef,
-      validateInput,
       updateValue,
-      clearInputs
+      clearInputs,
+      validateInput
     }
   }
 
