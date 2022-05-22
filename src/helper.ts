@@ -1,4 +1,4 @@
-import { ColumnProps, ImageProps, PostProps, UserProps } from './store'
+import { ColumnProps, ImageProps, UserProps } from './store'
 
 export function generateFitUrl (data:ImageProps, width: number, height: number, format = ['m_pad']) {
   if (data && data.url) {
@@ -48,4 +48,18 @@ export function beforeUploadCheck (file: File, condition: CheckCondition) {
     passed: isValidFormat && isValidSize,
     error
   }
+}
+
+// 数组和对象互相转换
+export const arrToObj = <T extends { _id?: string}>(arr: Array<T>) => {
+  return arr.reduce((prev, current) => {
+    if (current._id) {
+      prev[current._id] = current
+    }
+    return prev
+  }, {} as { [key: string]: T})
+}
+
+export const objToArr = <T>(obj: {[key: string]: T}) => {
+  return Object.keys(obj).map(key => obj[key])
 }

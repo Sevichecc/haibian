@@ -17,7 +17,7 @@
 import { defineComponent, computed, onMounted } from 'vue'
 import { useRoute } from 'vue-router'
 import { useStore } from 'vuex'
-import { GlobalDataProps } from '../store'
+import { GlobalDataProps, ColumnProps } from '../store'
 import { addColumnAvatar } from '../helper'
 import PostList from '../components/PostList.vue'
 
@@ -31,7 +31,14 @@ export default defineComponent({
       store.dispatch('fetchColumn', currentId)
       store.dispatch('fetchPosts', currentId)
     })
-    const column = computed(() => store.getters.getColumnById(currentId))
+    const column = computed(() => {
+      const selectColumn = store.getters.getColumnById(currentId) as ColumnProps | undefined
+
+      if (selectColumn) {
+        addColumnAvatar(selectColumn, 100, 100)
+      }
+      return selectColumn
+    })
     const list = computed(() => store.getters.getPostsByCid(currentId))
     return {
       column,

@@ -15,10 +15,7 @@ import mitt from 'mitt'
 
 type ValidateFunc = () => boolean
 type ClearFunc = () => void
-type Events = {
-  'form-item-created': ValidateFunc
-  'form-item-clear': ClearFunc
-}
+
 export const emitter = mitt()
 
 export default defineComponent({

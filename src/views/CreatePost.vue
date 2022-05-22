@@ -35,14 +35,13 @@
       </div>
       <div class="mb-3">
         <label class="form-label">文章详情：</label>
-        <validate-input
-          rows="10"
-          type="text"
-          tag="textarea"
-          placeholder="请输入文章详情"
-          :rules="contentRules"
-          v-model="contentVal"
-        />
+        <editor
+        v-model="contentVal"
+        :options="editorOptions"
+        @blur="checkEditor"
+        :class="{'is-invalid': !editorStatus.isValid}"
+        ref="editorRef"></editor>
+        <span v-if="!editorStatus.isValid" class="invalid-feedback mt-1">{{editorStatus.message}}</span>
       </div>
       <template #submit>
         <button class="btn btn-primary btn-large">{{isEditMode ? '更新文章' : '发表文章'}}</button>
@@ -52,23 +51,26 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, onMounted } from 'vue'
+import { defineComponent, ref, onMounted, reactive } from 'vue'
 import { useStore } from 'vuex'
 import { useRouter, useRoute } from 'vue-router'
 import { GlobalDataProps, PostProps, ResponseType, ImageProps } from '../store'
 import ValidateInput, { RulesProp } from '../components/ValidateInput.vue'
 import ValidateForm from '../components/ValidateForm.vue'
 import axios from 'axios'
+import { Options } from 'easymde'
 import Uploader from '../components/Uploader.vue'
 import createMessage from '../components/createMessage'
 import { beforeUploadCheck } from '../helper'
+import Editor from '../components/Editor.vue'
 
 export default defineComponent({
   name: 'Login',
   components: {
     ValidateInput,
     ValidateForm,
-    Uploader
+    Uploader,
+    Editor
   },
   setup () {
     const uploadedData = ref()
@@ -77,14 +79,30 @@ export default defineComponent({
     const route = useRoute()
     const isEditMode = !!route.query.id
     const store = useStore<GlobalDataProps>()
+    const textArea = ref<null | HTMLTextAreaElement>(null)
     let imageId = ''
+    const editorStatus = reactive({
+      isValid: true,
+      message: ''
+
+    })
+    const editorOptions: Options = {
+      spellChecker: false
+    }
     const titleRules: RulesProp = [
       { type: 'required', message: '文章标题不能为空' }
     ]
     const contentVal = ref('')
-    const contentRules: RulesProp = [
-      { type: 'required', message: '文章详情不能为空' }
-    ]
+
+    const checkEditor = () => {
+      if (contentVal.value.trim() === '') {
+        editorStatus.isValid = false
+        editorStatus.message = '文章详情不能为空'
+      } else {
+        editorStatus.isValid = true
+        editorStatus.message = ''
+      }
+    }
 
     onMounted(() => {
       if (isEditMode) {
@@ -105,7 +123,8 @@ export default defineComponent({
     }
 
     const onFormSubmit = (result: boolean) => {
-      if (result) {
+      checkEditor()
+      if (result && editorStatus.isValid) {
         const { column, _id } = store.state.user
         if (column) {
           const newPost: PostProps = {
@@ -169,13 +188,16 @@ export default defineComponent({
       titleRules,
       titleVal,
       contentVal,
-      contentRules,
       onFormSubmit,
       handleFileChange,
       handleFileUploaded,
       uploadCheck,
       uploadedData,
-      isEditMode
+      isEditMode,
+      textArea,
+      editorOptions,
+      checkEditor,
+      editorStatus
     }
   }
 })
