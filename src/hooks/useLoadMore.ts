@@ -1,4 +1,4 @@
-import { ref, computed, ComputedRef} from 'vue'
+import { ref, computed, ComputedRef } from 'vue'
 import { useStore } from 'vuex'
 interface LoadParams {
   currentPage: number;
