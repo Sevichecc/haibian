@@ -33,7 +33,7 @@ export default defineComponent({
       store.dispatch('fetchColumns')
     })
 
-    const list = computed(() => store.state.columns)
+    const list = computed(() => store.getters.getColumns)
 
     const beforeUpload = (file: File) => {
       const isJPG = file.type === 'image/jpeg'
