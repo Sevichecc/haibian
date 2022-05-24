@@ -1,16 +1,17 @@
 import { ref, computed, ComputedRef } from 'vue'
 import { useStore } from 'vuex'
 interface LoadParams {
-  currentPage: number;
-  pageSize: number
+  currentPage?: number;
+  pageSize?: number;
+  [key: string]: any;
 }
 
-const useLoadMore = (actionName: string, total: ComputedRef<number>, params: LoadParams = { currentPage: 2, pageSize: 5 }) => {
+const useLoadMore = (actionName: string, total: ComputedRef<number>, params: LoadParams = {}, pageSize = 5) => {
   const store = useStore()
-  const currentPage = ref(params.currentPage)
+  const currentPage = ref((params && params.currentPage) || 1)
   const requestParams = computed(() => ({
-    currentPage: currentPage.value,
-    pageSize: params.pageSize
+    ...params,
+    currentPage: currentPage.value + 1
   }))
 
   const loadMorePage = () => {
@@ -20,7 +21,7 @@ const useLoadMore = (actionName: string, total: ComputedRef<number>, params: Loa
   }
 
   const isLastPage = computed(() => {
-    return Math.ceil(total.value / params.pageSize) < currentPage.value
+    return Math.ceil(total.value || 1 / pageSize) < currentPage.value
   })
 
   return {

@@ -7,7 +7,7 @@
       <slot v-else-if="fileStatus==='success'" name="uploaded" :uploadedData="uploadedData">
         <button class="btn btn-primary">上传成功</button>
       </slot>
-      <button  v-if="fileStatus==='success'" class="btn btn-secondary" @click.stop="fileDelete">删除</button>
+      <button  v-if="fileStatus==='success'" class="btn d-block btn-secondary" @click.stop="fileDelete">清空</button>
       <slot v-else name="default" >
         <button class="btn btn-primary">点击上传</button>
       </slot>
@@ -50,6 +50,8 @@ export default defineComponent({
       if (newValue) {
         fileStatus.value = 'success'
         uploadedData.value = newValue
+      } else {
+        fileStatus.value = 'ready'
       }
     })
 

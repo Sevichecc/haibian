@@ -53,12 +53,26 @@ export interface GlobalErrorProps {
   message?: string
 }
 
+export interface GlobalColumnsProps {
+  data: ListProps<ColumnProps>;
+  currentPage: number;
+  total?: number;
+}
+
+export interface GlobalPostProps {
+  data: ListProps<PostProps>
+  loadedColumns: ListProps<{
+    total?: number;
+    currentPage?: number;
+  }>
+}
+
 export interface GlobalDataProps {
   error: GlobalErrorProps
   token: string,
   loading: boolean;
-  columns: { data: ListProps<ColumnProps>; currentPage: number; total: number }
-  posts: { data: ListProps<PostProps>; LoadedColumns: string[]};
+  columns: GlobalColumnsProps;
+  posts: GlobalPostProps;
   user: UserProps;
 }
 
@@ -78,13 +92,13 @@ const store = createStore<GlobalDataProps>({
     error: { status: false },
     token: localStorage.getItem('token') || '',
     loading: false,
-    columns: { data: {}, currentPage: 0, total: 0 },
-    posts: { data: {}, LoadedColumns: [] },
+    columns: { data: {}, currentPage: 0 },
+    posts: { data: {}, loadedColumns: {} },
     user: { isLogin: false }
   },
   mutations: {
-    createPost (state, newPost) {
-      state.posts.data[newPost._id] = newPost
+    createPost (state, { data }) {
+      state.posts.data[data._id] = data
     },
     fetchColumns (state, rawData) {
       const { data } = state.columns
@@ -95,21 +109,30 @@ const store = createStore<GlobalDataProps>({
         currentPage: currentPage * 1
       }
     },
-    fetchColumn (state, rawData) {
-      state.columns.data[rawData.data._id] = rawData.data
+    fetchColumn (state, { data }) {
+      state.columns.data[data._id] = data
     },
-    fetchPosts (state, { data: rawData, extraData: columnId }) {
-      state.posts.data = { ...state.posts.data, ...arrToObj(rawData.data.list) }
-      state.posts.LoadedColumns.push(columnId)
+    fetchPosts (state, { data: rawData, extraData }) {
+      const { data, loadedColumns } = state.posts
+      const { list, count, currentPage } = rawData.data
+      const listData = list as PostProps[]
+      state.posts.data = { ...data, ...arrToObj(listData) }
+      loadedColumns[extraData] = {
+        total: count,
+        currentPage
+      }
     },
-    fetchPost (state, rawData) {
-      state.posts.data[rawData.data._id] = rawData.data
+    fetchPost (state, { data }) {
+      state.posts.data[data._id] = data
     },
     deletePost (state, { data }) {
       delete state.posts.data[data._id]
     },
     updatePost (state, { data }) {
       state.posts.data[data._id] = data
+    },
+    updateColumn (state, { data }) {
+      state.columns.data[data._id] = data
     },
     setLoading (state, status) {
       state.loading = status
@@ -126,6 +149,9 @@ const store = createStore<GlobalDataProps>({
       localStorage.setItem('token', token)
       axios.defaults.headers.common.Authorization = `Bearer ${token}`
     },
+    updateUser (state, { data }) {
+      state.user = { isLogin: true, ...data }
+    },
     logout (state) {
       state.token = ''
       state.user = { isLogin: false }
@@ -134,31 +160,35 @@ const store = createStore<GlobalDataProps>({
     }
   },
   actions: {
-    fetchColumns ({ state, commit }, params = {}) {
+    fetchColumns ({ commit, state }, params = {}) {
       const { currentPage = 1, pageSize = 6 } = params
-      return asyncAndCommit(`/columns?currentPage=${currentPage}&pageSize=${pageSize}`, 'fetchColumns', commit)
-      // if (!state.columns.isLoaded) {
-      //   return asyncAndCommit('/columns', 'fetchColumns', commit)
-      // }
+      if (state.columns.currentPage < currentPage) {
+        return asyncAndCommit(`/columns?currentPage=${currentPage}&pageSize=${pageSize}`, 'fetchColumns', commit)
+      }
     },
-    fetchColumn ({ state, commit }, cid) {
-      if (!state.columns.data[cid]) {
+    fetchColumn ({ commit, state }, cid) {
+      const cIdArr = Object.keys(state.columns.data)
+      if (!cIdArr.includes(cid)) {
         return asyncAndCommit(`/columns/${cid}`, 'fetchColumn', commit)
       }
     },
-    fetchPosts ({ state, commit }, cid) {
-      if (!state.posts.LoadedColumns.includes(cid)) {
-        return asyncAndCommit(`/columns/${cid}/posts`, 'fetchPosts', commit, {
-          method: 'get'
-        }, cid)
+    fetchPosts ({ state, commit }, params = {}) {
+      const { cid, currentPage = 1, pageSize = 5 } = params
+      const { loadedColumns } = state.posts
+      // 是否在当前页面
+      const loadedCurrentPage = (loadedColumns[cid] && loadedColumns[cid].currentPage) || 0
+      if (!Object.keys(loadedColumns).includes(cid) || loadedCurrentPage < currentPage) {
+        return asyncAndCommit(`/columns/${cid}/posts?currentPage=${currentPage}&pageSize=${pageSize}`,
+          'fetchPosts', commit, { method: 'get' }, cid)
       }
     },
-    fetchPost ({ state, commit }, id) {
-      const currentPost = state.posts.data[id]
-      if (!currentPost || !currentPost.content) {
+    fetchPost ({ commit, state }, id) {
+      const { data } = state.posts
+      const certainPost = data[id]
+      if (!certainPost || !certainPost.content) {
         return asyncAndCommit(`/posts/${id}`, 'fetchPost', commit)
       } else {
-        return Promise.resolve({ data: currentPost })
+        return Promise.resolve({ data: certainPost })
       }
     },
     updatePost ({ commit }, { id, payload }) {
@@ -166,6 +196,10 @@ const store = createStore<GlobalDataProps>({
         method: 'patch',
         data: payload
       })
+    },
+    // 更新专栏
+    updateColumn ({ commit }, { id, payload }) {
+      return asyncAndCommit(`/columns/${id}`, 'updateColumn', commit, { method: 'patch', data: payload })
     },
     fetchCurrentUser ({ commit }) {
       return asyncAndCommit('/user/current', 'fetchCurrentUser', commit)
@@ -187,6 +221,10 @@ const store = createStore<GlobalDataProps>({
         method: 'delete'
       })
     },
+    // 更新用户信息
+    updateUser ({ commit }, { id, payload }) {
+      return asyncAndCommit(`/user/${id}`, 'updateUser', commit, { method: 'patch', data: payload })
+    },
     loginAndFetch ({ dispatch }, loginData) {
       return dispatch('login', loginData).then(() => {
         return dispatch('fetchCurrentUser')
@@ -205,6 +243,20 @@ const store = createStore<GlobalDataProps>({
     },
     getCurrentPost: (state) => (id: string) => {
       return state.posts.data[id]
+    },
+    getPostsCountByCid: (state) => (cid: string) => {
+      if (state.posts.loadedColumns[cid]) {
+        return state.posts.loadedColumns[cid].total
+      } else {
+        return 0
+      }
+    },
+    getPostsCurrentPageByCid: (state) => (cid: string) => {
+      if (state.posts.loadedColumns[cid]) {
+        return state.posts.loadedColumns[cid].currentPage
+      } else {
+        return 0
+      }
     }
   }
 })

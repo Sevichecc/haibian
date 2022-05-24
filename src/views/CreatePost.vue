@@ -1,11 +1,11 @@
 <template>
-  <div class="create-post-page">
+  <div class="create-post-page container">
     <h4>{{isEditMode ? '编辑文章' : '新建文章'}}</h4>
     <uploader
     action="/upload"
     class="d-flex align-items-center justify-content-center bg-light text-secondary w-100 my-4"
     @file-uploaded="handleFileUploaded"
-    :beforeUploaded="uploadCheck"
+    :beforeUploaded="commonUploadCheck"
     :uploaded="uploadedData">
     <h2>点击上传头图</h2>
     <template #loading>
@@ -61,7 +61,7 @@ import axios from 'axios'
 import { Options } from 'easymde'
 import Uploader from '../components/Uploader.vue'
 import createMessage from '../components/createMessage'
-import { beforeUploadCheck } from '../helper'
+import { commonUploadCheck } from '../helper'
 import Editor from '../components/Editor.vue'
 
 export default defineComponent({
@@ -155,18 +155,6 @@ export default defineComponent({
       }
     }
 
-    const uploadCheck = (file: File) => {
-      const result = beforeUploadCheck(file, { format: ['image/jpeg', 'image/png'], size: 1 })
-      const { passed, error } = result
-      if (error === 'format') {
-        createMessage('上传图片只能是 JPG/PNG 格式!', 'error')
-      }
-      if (error === 'size') {
-        createMessage('上传图片大小不能超过 1Mb', 'error')
-      }
-      return passed
-    }
-
     const handleFileChange = (e: Event) => {
       const target = e.target as HTMLInputElement
       const files = target.files
@@ -191,7 +179,7 @@ export default defineComponent({
       onFormSubmit,
       handleFileChange,
       handleFileUploaded,
-      uploadCheck,
+      commonUploadCheck,
       uploadedData,
       isEditMode,
       textArea,
