@@ -5,7 +5,7 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, onMounted, onUnmounted, watch } from 'vue'
+import { ref, onMounted, onUnmounted, watch, defineProps, defineEmits, defineExpose } from 'vue'
 import EasyMDE, { Options } from 'easymde'
 // 定义类型、属性以及事件
 interface EditorProps {
