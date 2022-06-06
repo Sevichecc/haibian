@@ -1,13 +1,14 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import axios from 'axios'
-import Home from './views/Home.vue'
-import Login from './views/Login.vue'
-import ColumnDetail from './views/ColumnDetail.vue'
-import PostDetail from './views/PostDetail.vue'
-import CreatePosts from './views/CreatePost.vue'
-import EditProfile from './views/EditProfile.vue'
-import Signup from './views/Signup.vue'
 import store from './store'
+
+const Home = () => import('@/views/Home.vue')
+const Login = () => import('@/views/Login.vue')
+const ColumnDetail = () => import('@/views/ColumnDetail.vue')
+const PostDetail = () => import('@/views/PostDetail.vue')
+const CreatePost = () => import('@/views/CreatePost.vue')
+const Signup = () => import('@/views/Signup.vue')
+const EditProfile = () => import('@/views/EditProfile.vue')
 const routerHistory = createWebHistory()
 const router = createRouter({
   history: routerHistory,
@@ -38,7 +39,7 @@ const router = createRouter({
     {
       path: '/create',
       name: 'create',
-      component: CreatePosts,
+      component: CreatePost,
       meta: {
         requiredLogin: true
       }

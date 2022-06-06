@@ -2,7 +2,7 @@
   <div class="column-detail-page w-690">
     <div class="column-info row mb-4 border-bottom pb-4 align-items-center" v-if="column">
       <div class="col-3 text-center">
-        <img :src="column.avatar && column.avatar.fitUrl" :alt="column.title" class="rounded-circle border w-100">
+        <img v-lazy="column.avatar && column.avatar.fitUrl" :alt="column.title" class="rounded-circle border w-100">
       </div>
       <div class="col-9">
         <h4>{{column.title}}</h4>
