@@ -25,6 +25,7 @@
       </div>
     </article>
   </div>
+  <back-to-top></back-to-top>
 </template>
 
 <script lang="ts">
@@ -36,10 +37,11 @@ import { GlobalDataProps, PostProps, ImageProps, UserProps, ResponseType } from 
 import UserProfile from '@/components/UserProfile.vue'
 import Modal from '@/components/Modal.vue'
 import createMessage from '@/components/createMessage'
+import BackToTop from '@/components/BackToTop.vue'
 
 export default defineComponent({
   name: 'post-detail',
-  components: { UserProfile, Modal },
+  components: { UserProfile, Modal, BackToTop },
   setup () {
     const store = useStore<GlobalDataProps>()
     const route = useRoute()

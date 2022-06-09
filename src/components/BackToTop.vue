@@ -1,62 +1,54 @@
 <template>
-  <button class="btn btn-secondary float-end"
-   v-show="isVisible" @click="handleScroll">
-    <img src="../assets/to-top.svg"/>
-  </button>
+  <div class="position-sticky bottom-0 end-0 w-100 d-flex justify-content-end b-0 pb-3 pe-5">
+    <transition>
+      <button class="btn btn-secondary btn-sm"
+      v-show="isVisible" @click="scrollToTop"
+      aria-label="scroll to top of the page"
+      >
+        <img src="../assets/to-top.svg"/>
+      </button>
+    </transition>
+  </div>
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, onMounted, onUnmounted } from 'vue'
+import { defineComponent, ref, onMounted, onBeforeUnmount } from 'vue'
 
 export default defineComponent({
   name: 'BackToTop',
-  props: {
-    el: {
-      type: String,
-      default: '#app'
-    },
-    move: {
-      type: Number,
-      default: 300
-    }
-  },
-  setup(props) {
-    const isVisible = ref(true)
-    const display = ref('')
-    const timer = ref(0)
-
-    // 控制滚动到顶部
-    const scrollToTop = () => {
-      const scrollY = document.documentElement.scrollTop
-      if (scrollY > 0) {
-        document.documentElement.scrollTop = scrollY - props.move
-        requestAnimationFrame(scrollToTop) || setTimeout(scrollToTop, 1000 / 60)
-      } else {
-        cancelAnimationFrame(timer.value) || clearTimeout(timer.value)
-      }
-    }
-    // 控制滚动行为
+  setup() {
+    const isVisible = ref(false)
     const handleScroll = () => {
-      clearTimeout(timer.value)
-      cancelAnimationFrame(timer.value)
-      timer.value = requestAnimationFrame(scrollToTop) || setTimeout(scrollToTop, 1000 / 60)
-      scrollToTop()
+      isVisible.value = window.scrollY > 0
     }
-
+    const scrollToTop = () => {
+      window.scrollTo({
+        top: 0,
+        behavior: 'smooth'
+      })
+    }
     onMounted(() => {
       window.addEventListener('scroll', handleScroll)
     })
-    onUnmounted(() => {
+    onBeforeUnmount(() => {
       window.removeEventListener('scroll', handleScroll)
     })
     return {
       isVisible,
-      display,
-      handleScroll
+      handleScroll,
+      scrollToTop
     }
   }
 })
 </script>
 
 <style>
+.v-enter-active,
+.v-leave-active {
+  transition: opacity 0.2s ease;
+}
+.v-enter-from,
+.v-leave-to {
+  opacity: 0;
+}
 </style>

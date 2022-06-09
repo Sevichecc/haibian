@@ -19,8 +19,8 @@
     >
       加载更多
     </button>
-    <!-- <back-to-top></back-to-top> -->
   </div>
+  <back-to-top></back-to-top>
 </template>
 
 <script lang="ts">
