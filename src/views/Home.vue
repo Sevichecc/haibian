@@ -19,6 +19,7 @@
     >
       加载更多
     </button>
+    <!-- <back-to-top></back-to-top> -->
   </div>
 </template>
 
@@ -28,12 +29,13 @@ import { useStore } from 'vuex'
 import { GlobalDataProps, ResponseType, ImageProps } from '../store'
 import ColumnList from '../components/ColumnList.vue'
 import createMessage from '../components/createMessage'
+import BackToTop from '../components/BackToTop.vue'
 import useLoadMore from '@/hooks/useLoadMore'
 import { objToArr } from '@/helper'
 
 export default defineComponent({
   name: 'Home',
-  components: { ColumnList },
+  components: { ColumnList, BackToTop },
   setup () {
     const store = useStore<GlobalDataProps>()
     const totalColumns = computed(() =>
