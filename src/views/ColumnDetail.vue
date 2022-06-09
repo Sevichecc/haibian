@@ -17,6 +17,7 @@
       加载更多
     </button>
   </div>
+  <back-to-top></back-to-top>
 </template>
 
 <script lang="ts">
@@ -27,9 +28,10 @@ import { GlobalDataProps, ColumnProps } from '../store'
 import { addColumnAvatar } from '../helper'
 import PostList from '../components/PostList.vue'
 import useLoadMore from '@/hooks/useLoadMore'
+import BackToTop from '@/components/BackToTop.vue'
 
 export default defineComponent({
-  components: { PostList },
+  components: { PostList, BackToTop },
   setup () {
     const store = useStore<GlobalDataProps>()
     const route = useRoute()
