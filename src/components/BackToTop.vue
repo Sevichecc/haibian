@@ -5,7 +5,7 @@
       v-show="isVisible" @click="scrollToTop"
       aria-label="scroll to top of the page"
       >
-        <img src="../assets/to-top.svg"/>
+        <img src="../assets/to-top.min.svg" alt="a arrow point to top"/>
       </button>
     </transition>
   </div>
