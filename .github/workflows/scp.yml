@@ -11,7 +11,8 @@ jobs:
     - name: Install Dependance (npm) 安装依赖
       run: |
         npm install -g pnpm
-        pnpm i
+        npm install -g @vue/cli
+        pnpm install
     - name: Build Production Code 生成生产环境代码
       run: |
         rm -rf dist 
