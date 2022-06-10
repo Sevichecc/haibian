@@ -9,7 +9,9 @@ jobs:
     - uses: actions/checkout@master
     - uses: actions/setup-node@master
     - name: Install Dependance (pnpm) 安装依赖
-      run: pnpm install
+      run: | 
+        npm install -g pnpm
+        pnpm install
     - name: Build Production Code 生成生产环境代码
       run: |
         rm -rf dist 
