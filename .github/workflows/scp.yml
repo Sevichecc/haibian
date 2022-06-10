@@ -9,11 +9,11 @@ jobs:
     - uses: actions/checkout@master
     - uses: actions/setup-node@master
     - name: Install Dependance (npm) 安装依赖
-      run: npm i --legacy-peer-deps
+      run: pnpm install
     - name: Build Production Code 生成生产环境代码
       run: |
         rm -rf dist 
-        npm run build
+        pnpm build
     - name: copy file via ssh password 上传代码到云主机
       uses: appleboy/scp-action@master
       with:
