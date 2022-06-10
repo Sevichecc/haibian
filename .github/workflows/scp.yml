@@ -24,3 +24,4 @@ jobs:
         source: "dist/*"
         target: ${{secrets.TARGET}}
         overwrite: true
+        strip_components: 1
