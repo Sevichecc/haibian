@@ -76,7 +76,7 @@ router.beforeEach((to, from, next) => {
           next()
         }
       }).catch(e => {
-        console.error(e)
+
         store.commit('logout')
         next('/login')
       })

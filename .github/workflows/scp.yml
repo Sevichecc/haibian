@@ -8,7 +8,7 @@ jobs:
     steps:
     - uses: actions/checkout@master
     - uses: actions/setup-node@master
-    - name: Install Dependance (npm) 安装依赖
+    - name: Install Dependance (pnpm) 安装依赖
       run: pnpm install
     - name: Build Production Code 生成生产环境代码
       run: |
@@ -24,4 +24,4 @@ jobs:
         source: "dist/*"
         target: ${{secrets.TARGET}}
         overwrite: true
-        strip_components: 1
+        
