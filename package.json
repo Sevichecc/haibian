@@ -39,5 +39,6 @@
     "eslint-plugin-vue": "^8.0.3",
     "postcss": "^8.4.12",
     "typescript": "~4.5.5"
-  }
+  },
+  "auto-install-peers": true
 }
