@@ -1,3 +1,5 @@
+[![scp files](https://github.com/Sevichecc/zheye/actions/workflows/scp.yml/badge.svg)](https://github.com/Sevichecc/zheye/actions/workflows/scp.yml)
+
 # zheye
 
 ## Project setup
