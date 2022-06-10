@@ -23,10 +23,4 @@ jobs:
         key: ${{ secrets.KEY}}
         source: "dist/*"
         target: ${{secrets.TARGET}}
-      run: |
-        sudo rm -rf ${{secrets.TARGET}}/js
-        ${{ secrets.PASSWORD}}
-        sudo rm -rf ${{secrets.TARGET}}/css
-        ${{ secrets.PASSWORD}}
-        sudo rm -rf ${{secrets.TARGET}}/img
-        ${{ secrets.PASSWORD}}
+        overwrite: true
