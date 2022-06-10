@@ -1,7 +1,8 @@
 {
-  "name": "zhihu",
-  "version": "0.1.0",
+  "name": "zheye",
+  "version": "0.2.0",
   "private": true,
+  "author": "Sevichecc",
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
