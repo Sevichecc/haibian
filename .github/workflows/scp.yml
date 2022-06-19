@@ -11,6 +11,8 @@ jobs:
     - name: Install Dependance (npm) 安装依赖
       run: npm i --legacy-peer-deps
     - name: Build Production Code 生成生产环境代码
+      env:
+        ICODE: ${env.ICODE}
       run: |
         rm -rf dist 
         npm run build
