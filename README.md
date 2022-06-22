@@ -1,6 +1,6 @@
-[![scp files](https://github.com/Sevichecc/zheye/actions/workflows/scp.yml/badge.svg)](https://github.com/Sevichecc/zheye/actions/workflows/scp.yml)
+[![scp files](https://github.com/Sevichecc/haibian/actions/workflows/scp.yml/badge.svg)](https://github.com/Sevichecc/haibian/actions/workflows/scp.yml)
 
-# zheye
+# 海边小站
 - 框架：Vue + Vuex + Vue-router + TypeScript
 - 库： Bootstrap + Axio + easyMDE +mitt + markdown-it + JWT
 - 构建：Vue-CLI + ESLint 

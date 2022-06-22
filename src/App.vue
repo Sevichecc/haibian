@@ -6,8 +6,8 @@
     <footer class="text-center py-4 text-dark bg-light mt-6 ">
       <small>
         <ul class="list-inline mb-0">
-          <li class="list-inline-item">© 2022 者也专栏</li>
-          <li class="list-inline-item"><a href="https://github.com/Sevichecc/zheye">Github</a></li>
+          <li class="list-inline-item">© 2022 海边小站</li>
+          <li class="list-inline-item"><a href="https://github.com/Sevichecc/haibian">Github</a></li>
         </ul>
       </small>
     </footer>
