@@ -4,7 +4,7 @@
       <div class="row py-lg-5">
         <div class="col-lg-6 col-md-8 mx-auto">
           <img src="../assets/callout.min.svg" alt="callout" width="312" height="260" />
-          <h2 class="font-weight-light">随心写作，自由表达</h2>
+          <h2 class="font-weight-light">轻松学英语，自由表达</h2>
           <p>
             <router-link to="/create" class="btn btn-primary my-2">开始写文章</router-link>
           </p>
